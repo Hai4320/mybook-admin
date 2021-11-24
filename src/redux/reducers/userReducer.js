@@ -1,12 +1,10 @@
 
-import {LOGIN, LOGOUT} from "../types"
+import {LOGIN, LOGOUT, GET_USERS} from "../types"
 
 
 const INIT_STATE = {
-    name: null,
-    email: null,
-    avatar: null,
-    role: null
+   admin: {},
+   users: [],
 };
 
 function userReducer(state = INIT_STATE, action) 
@@ -15,13 +13,16 @@ function userReducer(state = INIT_STATE, action)
         case LOGIN:
             return {
                 ...state, 
-                name: action.payload.name, 
-                avatar: action.payload.avatar, 
-                role: action.payload.role, 
-                email: action.payload.email
+                admin: action.payload,
             };
+        case GET_USERS:
+            return {
+                ...state, 
+                users: action.payload,
+            };    
         case LOGOUT:
             return {...state}
+
         default: 
             return state;
     }

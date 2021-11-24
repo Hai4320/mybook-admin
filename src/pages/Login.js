@@ -11,16 +11,28 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import {useDispatch, useSelector} from 'react-redux'
+import {LoginAdmin} from '../redux/actions/userAction'
 function Login() {
-    const handleSubmit = (event) => {
+  const dispatch = useDispatch();
+
+  const handleSubmit = async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        console.log({
+        const user = {
           email: data.get('email'),
           password: data.get('password'),
-        });
+        };
+        const result =  await dispatch(LoginAdmin(user));
+        if (result.status===200) {
+          alert("Login success!")
+          window.location.reload();
+        }
+        else{
+          alert(result.data.message)
+        }
       };
-    return (
+  return (
         <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box

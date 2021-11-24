@@ -15,28 +15,39 @@ import {FiUsers} from 'react-icons/fi';
 import {IoNewspaperOutline, IoLogOutOutline} from 'react-icons/io5';
 const drawerWidth = 240
 const useStyles = makeStyles({
-    drawer: {
-        width: drawerWidth,
-    },
-    drawerPaper: {
-        width: drawerWidth,
+    item:{
+        color: "white"
     }
 })
 
-function Nav({label=0}) {
+function Nav() {
     const navigate = useNavigate();
     const [select,setSelected] = useState(0)
     const classes = useStyles();
     const handleListItemClick = (event, index) => {
         setSelected(index);
       };
+    const handleLogout= (event,index) => {
+        setSelected(index);
+        localStorage.removeItem('islogin');
+        localStorage.removeItem('userData');
+        window.location.reload();
+    }
     return (
         <div className="container">
             <Drawer 
-            className={classes.drawer}
-            variant="permanent"
-            anchor="left"
-            classes={{paper: classes.drawerPaper}}>
+             sx={{
+                width: drawerWidth,
+                flexShrink: 0,
+                '& .MuiDrawer-paper': {
+                  width: drawerWidth,
+                  boxSizing: 'border-box',
+                  background: "#333",
+                  color: 'white',
+                },
+              }}
+              variant="permanent"
+              anchor="left">
                 <Typography variant='h6'>MyBooks</Typography>
                 <List>
                     <ListItemButton
@@ -47,9 +58,9 @@ function Nav({label=0}) {
                         navigate('/book')
                     }}>
                         <ListItemIcon>
-                            <ImBooks/>
+                            <ImBooks className={classes.item}/>
                         </ListItemIcon>
-                        <ListItemText primary="Books" />
+                        <ListItemText primary="Books"  className={classes.item} />
                     </ListItemButton>
                     <ListItemButton
                     selected={select === 1}
@@ -58,9 +69,9 @@ function Nav({label=0}) {
                         navigate('/post')
                     }}>
                         <ListItemIcon>
-                            <IoNewspaperOutline/>
+                            <IoNewspaperOutline  className={classes.item}/>
                         </ListItemIcon>
-                        <ListItemText primary="Posts" />
+                        <ListItemText primary="Posts"  className={classes.item}/>
                     </ListItemButton>
                     <ListItemButton
                     selected={select === 2}
@@ -69,16 +80,16 @@ function Nav({label=0}) {
                         navigate('/user')
                     }}>
                         <ListItemIcon>
-                            <FiUsers/>
+                            <FiUsers  className={classes.item}/>
                         </ListItemIcon>
-                        <ListItemText primary="Users    " />
+                        <ListItemText primary="Users"  className={classes.item}/>
                     </ListItemButton>
                     <ListItemButton
                     selected={select === 3}
-                    onClick={(event) => handleListItemClick(event, 3)}>
+                    onClick={(event) =>handleLogout(event, 3)}>
                         <ListItemText primary="Log out" />
                         <ListItemIcon>
-                            <IoLogOutOutline/>
+                            <IoLogOutOutline className={classes.item}/>
                         </ListItemIcon>
                     </ListItemButton>
                 </List>
