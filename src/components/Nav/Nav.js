@@ -41,7 +41,11 @@ function Nav({label=0}) {
                 <List>
                     <ListItemButton
                     selected={select === 0}
-                    onClick={(event) => handleListItemClick(event, 0)}>
+                    onClick={(event) => 
+                    {
+                        handleListItemClick(event, 0);
+                        navigate('/book')
+                    }}>
                         <ListItemIcon>
                             <ImBooks/>
                         </ListItemIcon>
@@ -49,7 +53,10 @@ function Nav({label=0}) {
                     </ListItemButton>
                     <ListItemButton
                     selected={select === 1}
-                    onClick={(event) => handleListItemClick(event, 1)}>
+                    onClick={(event) =>  {
+                        handleListItemClick(event, 1);
+                        navigate('/post')
+                    }}>
                         <ListItemIcon>
                             <IoNewspaperOutline/>
                         </ListItemIcon>
@@ -57,7 +64,10 @@ function Nav({label=0}) {
                     </ListItemButton>
                     <ListItemButton
                     selected={select === 2}
-                    onClick={(event) => handleListItemClick(event, 2)}>
+                    onClick={(event) =>  {
+                        handleListItemClick(event, 2);
+                        navigate('/user')
+                    }}>
                         <ListItemIcon>
                             <FiUsers/>
                         </ListItemIcon>
