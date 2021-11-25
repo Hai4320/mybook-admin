@@ -13,25 +13,20 @@ import Button from '@mui/material/Button';
 import {useSelector, useDispatch} from 'react-redux';
 import {getAllBook} from '../redux/actions/bookAction'
 import {AllBooks} from '../redux/selectors'
+import Typography from '@mui/material/Typography';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import TextField from '@mui/material/TextField';
+import {FcAddImage} from 'react-icons/fc'
 const useStyles = makeStyles({
     container:{
         marginTop: 100,
         width: '100%'
     }
 })
-
-
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
 function Book() {
 
     const books = useSelector(AllBooks);
@@ -44,9 +39,44 @@ function Book() {
     useEffect(async ()=>{
         await dispatch(getAllBook())
     },[])
+    const [userSelected, setSelected] = useState({});
+    const [open, setOpen] = React.useState(false);
+    const [open2, setOpen2] = React.useState(false);
+    const handleClickOpen = (row,setOpenx) => {
+        setSelected(row);
+        setOpenx(true);
+    };
+
+    const handleClose = (setOpenx) => {
+        setOpenx(false);
+    };
     return (
-       <div className={classes.container}>
-            BOOK
+       <div className={classes.container} >
+            <Box style={{marginBottom: 20}}>
+                <Typography variant="h5" style={{color: 'red', margin: 10}}>All Books Data</Typography>
+                <Button variant="contained">Add new book</Button>    
+            </Box>
+            <Dialog open={open2} onClose={()=>handleClose(setOpen2)}>
+                <DialogTitle>Delete {userSelected.Title}</DialogTitle>
+                <DialogContent>
+                <DialogContentText>
+                        Are you sure you want to delete this Book?
+                </DialogContentText>
+                <TextField
+                    autoFocus
+                    margin="dense"
+                    id="password"
+                    label="Confirm password"
+                    type="password"
+                    fullWidth
+                    variant="standard"
+                />
+                </DialogContent>
+                <DialogActions>
+                <Button onClick={()=>handleClose(setOpen2)}>Cancel</Button>
+                <Button onClick={()=>handleClose(setOpen2)} color="error">Delete</Button>
+                </DialogActions>
+            </Dialog>
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
                     <TableHead>
@@ -76,7 +106,7 @@ function Book() {
                         <TableCell align="left">{row.Type}</TableCell>
                         <TableCell align="left">{row.Image}</TableCell>
                         <TableCell align="center"><Button variant="contained">View</Button></TableCell>
-                        <TableCell align="center"><Button variant="contained">Delete</Button></TableCell>
+                        <TableCell align="center"><Button variant="contained" color="error" onClick={()=> handleClickOpen(row,setOpen2)}>Delete</Button></TableCell>
                         </TableRow>
                     ))}
                     </TableBody>

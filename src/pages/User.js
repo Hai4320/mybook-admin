@@ -13,6 +13,13 @@ import Button from '@mui/material/Button';
 import {useSelector, useDispatch} from 'react-redux';
 import {getAllUser} from '../redux/actions/userAction'
 import {AllUsers} from '../redux/selectors'
+import TextField from '@mui/material/TextField';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Typography from '@mui/material/Typography';
 const useStyles = makeStyles({
     container:{
         marginTop: 100,
@@ -30,10 +37,67 @@ function User() {
     },[users])
     useEffect(async ()=>{
         await dispatch(getAllUser())
-    },[])
+    },[]);
+    //dia Log
+    const [userSelected, setSelected] = useState({});
+    const [open, setOpen] = React.useState(false);
+    const [open2, setOpen2] = React.useState(false);
+    const handleClickOpen = (row,setOpenx) => {
+        setSelected(row);
+        setOpenx(true);
+    };
+
+    const handleClose = (setOpenx) => {
+        setOpenx(false);
+    };
     return (
        <div className={classes.container}>
-           USER
+            <Typography variant="h5" style={{color: 'red', margin: 10}}>All Users</Typography>
+           {/*---------------------------- Message */}
+           <Dialog open={open} onClose={()=>handleClose(setOpen)}>
+                <DialogTitle>Send Message</DialogTitle>
+                <DialogContent>
+                <DialogContentText>
+                    Send a new message to [ user:{userSelected.name}, ID:{userSelected._id} ]
+                </DialogContentText>
+                <TextField
+                    autoFocus
+                    margin="dense"
+                    id="massage"
+                    label="Message"
+                    type="text"
+                    fullWidth
+                    variant="standard"
+                />
+                </DialogContent>
+                <DialogActions>
+                <Button onClick={()=>handleClose(setOpen)}>Cancel</Button>
+                <Button onClick={()=>handleClose(setOpen)}>Send</Button>
+                </DialogActions>
+            </Dialog>
+            {/* ----------------------------Delete User */}
+            <Dialog open={open2} onClose={()=>handleClose(setOpen2)}>
+                <DialogTitle>Delete {userSelected.name}</DialogTitle>
+                <DialogContent>
+                <DialogContentText>
+                      Are you sure you want to delete this account?
+                </DialogContentText>
+                <TextField
+                    autoFocus
+                    margin="dense"
+                    id="password"
+                    label="Confirm password"
+                    type="password"
+                    fullWidth
+                    variant="standard"
+                />
+                </DialogContent>
+                <DialogActions>
+                <Button onClick={()=>handleClose(setOpen2)}>Cancel</Button>
+                <Button onClick={()=>handleClose(setOpen2)} color="error">Delete</Button>
+                </DialogActions>
+            </Dialog>
+            {/* -----------------------------data */}
            <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
                     <TableHead>
@@ -62,8 +126,21 @@ function User() {
                         <TableCell align="left">{row.email}</TableCell>
                         <TableCell align="left">{row.role}</TableCell>
                         <TableCell align="left">{row.avatar}</TableCell>
-                        <TableCell align="center"><Button variant="contained">Message</Button></TableCell>
-                        <TableCell align="center"><Button variant="contained">Delete</Button></TableCell>
+                        <TableCell align="center">
+                            <Button 
+                            variant="contained" 
+                            onClick={()=> handleClickOpen(row,setOpen)}>
+                                Message
+                            </Button>
+                        </TableCell>
+                        <TableCell align="center">
+                            <Button 
+                            variant="contained"
+                            color="error"  
+                            onClick={()=> handleClickOpen(row,setOpen2)}>
+                                Delete
+                            </Button>
+                        </TableCell>
                         </TableRow>
                     ))}
                     </TableBody>

@@ -10,28 +10,23 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
 import {useSelector, useDispatch} from 'react-redux';
 import {getAllPost} from '../redux/actions/postAction'
 import {AllPosts} from '../redux/selectors'
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import TextField from '@mui/material/TextField';
 const useStyles = makeStyles({
     container:{
         marginTop: 100,
-        width: '100%'
+        width: '200%'
     }
 })
 
-
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
 function Book() {
     const posts = useSelector(AllPosts);
     const [rows, setRows] = useState([]);
@@ -43,9 +38,43 @@ function Book() {
     useEffect(async ()=>{
         await dispatch(getAllPost())
     },[])
+    const [userSelected, setSelected] = useState({});
+    const [open, setOpen] = React.useState(false);
+    const [open2, setOpen2] = React.useState(false);
+    const handleClickOpen = (row,setOpenx) => {
+        setSelected(row);
+        setOpenx(true);
+    };
+
+    const handleClose = (setOpenx) => {
+        setOpenx(false);
+    };
     return (
        <div className={classes.container}>
-           POST
+           <Typography variant="h5" style={{color: 'red', margin: 10}}>All Posts Data</Typography>
+           {/* ------------------Dialog  */}
+           <Dialog open={open2} onClose={()=>handleClose(setOpen2)}>
+                <DialogTitle>Confirm</DialogTitle>
+                <DialogContent>
+                <DialogContentText>
+                      {userSelected.accept? "Remove Accept Post: "+ userSelected.title: "Accept Post: "+ userSelected.title}
+                </DialogContentText>
+                <TextField
+                    autoFocus
+                    margin="dense"
+                    id="password"
+                    label="Confirm password"
+                    type="password"
+                    fullWidth
+                    variant="standard"
+                />
+                </DialogContent>
+                <DialogActions>
+                <Button onClick={()=>handleClose(setOpen2)}>Cancel</Button>
+                <Button onClick={()=>handleClose(setOpen2)} >OK</Button>
+                </DialogActions>
+            </Dialog>
+            {/* ---------------------table data */}
            <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
                     <TableHead>
@@ -71,13 +100,19 @@ function Book() {
                         <TableCell component="th" scope="row">
                             {row._id}
                         </TableCell>
-                        <TableCell align="left">{row.title}</TableCell>
-                        <TableCell align="left">{row.userID}</TableCell>
+                        <TableCell align="left" style={{minWidth: 300}}>{row.title}</TableCell>
+                        <TableCell align="left" style={{width: 100}}><p>{row.userID}</p></TableCell>
                         <TableCell align="left">{row.accept? "Accepted": (row.upload? "Uploaded": "Saved")}</TableCell>
                         <TableCell align="left">{row.image}</TableCell>
-                        <TableCell align="left">{row.createdAt}</TableCell>
-                        <TableCell align="left" size="medium"><Button variant="contained">View</Button></TableCell>
-                        <TableCell align="center"><Button variant="contained">Accept</Button></TableCell>
+                        <TableCell align="left" style={{minWidth: 200}}>{row.createdAt}</TableCell>
+                        <TableCell align="left" style={{minWidth: 800}}><Typography variant="string">{JSON.stringify(row.details)}</Typography></TableCell>
+                        <TableCell align="center">
+                            {row.accept?
+                            <Button variant="outlined" color="error" onClick={()=> handleClickOpen(row,setOpen2)}>Accepted</Button>
+                            : row.upload?
+                            <Button variant="contained" onClick={()=> handleClickOpen(row,setOpen2)}>Accept</Button>
+                            : null}
+                        </TableCell>
                         </TableRow>
                     ))}
                     </TableBody>
