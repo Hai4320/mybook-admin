@@ -10,7 +10,7 @@ import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import {useSelector, useDispatch} from 'react-redux';
-import {getAllPost} from '../redux/actions/postAction'
+import {getAllPost, acceptPost} from '../redux/actions/postAction'
 import {AllPosts} from '../redux/selectors'
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -48,6 +48,22 @@ function Book() {
     const handleClose = (setOpenx) => {
         setOpenx(false);
     };
+    const [password,setPassword] = useState('');
+    const handleAccept = async (event) => {
+        console.log("halu")
+        event.preventDefault();
+        const data = {id: userSelected._id, password: password}; 
+        handleClose(setOpen2)
+        setPassword('');
+        const result = await dispatch(acceptPost(data));
+        if (result.status){
+            alert(result.data.message);
+        } else {
+            alert("something went wrong");
+        }
+
+        
+    }
     return (
        <div className={classes.container}>
            <Typography variant="h5" style={{color: 'red', margin: 10}}>All Posts Data</Typography>
@@ -64,13 +80,15 @@ function Book() {
                     id="password"
                     label="Confirm password"
                     type="password"
+                    value={password}
+                    onChange={(event)=> setPassword(event.target.value)}
                     fullWidth
                     variant="standard"
                 />
                 </DialogContent>
                 <DialogActions>
                 <Button onClick={()=>handleClose(setOpen2)}>Cancel</Button>
-                <Button onClick={()=>handleClose(setOpen2)} >OK</Button>
+                <Button onClick={(event)=>handleAccept(event)}>OK</Button>
                 </DialogActions>
             </Dialog>
             {/* ---------------------table data */}

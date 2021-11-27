@@ -76,6 +76,6 @@ export const deleteUser = (data) => async dispatch=>{
         return {status: result.status, data: datax}
     } catch (error) {
         console.log(error);
-        return null;
+        return {};
     }
 }

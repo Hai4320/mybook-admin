@@ -66,7 +66,6 @@ function User() {
 
         
     }
-    console.log("password",password);
     return (
        <div className={classes.container}>
            <FormControl>

@@ -11,5 +11,6 @@ export const getBooks_URL= API + "/books"
 
 //POST
 export const getPosts_URL= API + "/posts/adminget"
+export const acceptPosts_URL= API + "/posts/accept"
 //Comments
 
