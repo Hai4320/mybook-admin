@@ -1,7 +1,5 @@
 import React,{useState, useEffect} from 'react'
-import Box from "@mui/material/Box"
 import {makeStyles} from '@mui/styles'
-import { DataGrid } from '@mui/x-data-grid';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -11,7 +9,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import {useSelector, useDispatch} from 'react-redux';
-import {getAllUser} from '../redux/actions/userAction'
+import {getAllUser, deleteUser} from '../redux/actions/userAction'
 import {AllUsers} from '../redux/selectors'
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -20,6 +18,8 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Typography from '@mui/material/Typography';
+import CircularProgress from "react-cssfx-loading/lib/CircularProgress";
+import FormControl from '@mui/material/FormControl';
 const useStyles = makeStyles({
     container:{
         marginTop: 100,
@@ -36,7 +36,7 @@ function User() {
         setRows(users);
     },[users])
     useEffect(async ()=>{
-        await dispatch(getAllUser())
+        const x = await dispatch(getAllUser())
     },[]);
     //dia Log
     const [userSelected, setSelected] = useState({});
@@ -50,8 +50,26 @@ function User() {
     const handleClose = (setOpenx) => {
         setOpenx(false);
     };
+    //delete User Selected
+    const [password,setPassword] = useState('');
+    const handleDelete = async (event) => {
+        event.preventDefault();
+        const data = {id: userSelected._id, password: password}; 
+        handleClose(setOpen2)
+        setPassword('');
+        const result = await dispatch(deleteUser(data));
+        if (result.status){
+            alert(result.data.message);
+        } else {
+            alert("something went wrong");
+        }
+
+        
+    }
+    console.log("password",password);
     return (
        <div className={classes.container}>
+           <FormControl>
             <Typography variant="h5" style={{color: 'red', margin: 10}}>All Users</Typography>
            {/*---------------------------- Message */}
            <Dialog open={open} onClose={()=>handleClose(setOpen)}>
@@ -89,14 +107,17 @@ function User() {
                     label="Confirm password"
                     type="password"
                     fullWidth
+                    value={password}
+                    onChange={(event)=> setPassword(event.target.value)}
                     variant="standard"
                 />
                 </DialogContent>
                 <DialogActions>
                 <Button onClick={()=>handleClose(setOpen2)}>Cancel</Button>
-                <Button onClick={()=>handleClose(setOpen2)} color="error">Delete</Button>
+                <Button onClick={(event)=>handleDelete(event)} color="error">Delete</Button>
                 </DialogActions>
             </Dialog>
+            </FormControl>
             {/* -----------------------------data */}
            <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
@@ -146,6 +167,7 @@ function User() {
                     </TableBody>
                 </Table>
             </TableContainer>
+            {rows.length===0 ? <CircularProgress color="#1e90ff" width="50px" height="50px" duration="2s" />: null}
        </div>
     )
 }

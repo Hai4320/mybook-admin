@@ -1,7 +1,6 @@
 import React,{useState, useEffect} from 'react'
 import Box from "@mui/material/Box"
 import {makeStyles} from '@mui/styles'
-import { DataGrid } from '@mui/x-data-grid';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -20,7 +19,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
-import {FcAddImage} from 'react-icons/fc'
+import CircularProgress from "react-cssfx-loading/lib/CircularProgress";
 const useStyles = makeStyles({
     container:{
         marginTop: 100,
@@ -112,6 +111,7 @@ function Book() {
                     </TableBody>
                 </Table>
             </TableContainer>
+            {rows.length===0 ? <CircularProgress color="#1e90ff" width="50px" height="50px" duration="2s" />: null}
        </div>
     )
 }

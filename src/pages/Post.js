@@ -1,7 +1,5 @@
 import React,{useState, useEffect} from 'react'
-import Box from "@mui/material/Box"
 import {makeStyles} from '@mui/styles'
-import { DataGrid } from '@mui/x-data-grid';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -20,6 +18,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
+import CircularProgress from "react-cssfx-loading/lib/CircularProgress";
 const useStyles = makeStyles({
     container:{
         marginTop: 100,
@@ -36,7 +35,7 @@ function Book() {
         setRows(posts);
     },[posts])
     useEffect(async ()=>{
-        await dispatch(getAllPost())
+        const x = await dispatch(getAllPost())
     },[])
     const [userSelected, setSelected] = useState({});
     const [open, setOpen] = React.useState(false);
@@ -118,6 +117,7 @@ function Book() {
                     </TableBody>
                 </Table>
             </TableContainer>
+            {rows.length===0 ? <CircularProgress color="#1e90ff" width="50px" height="50px" duration="2s" />: null}
        </div>
     )
 }
