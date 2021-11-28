@@ -42,10 +42,25 @@ function Book() {
     const [open, setOpen] = React.useState(false);
     const [open2, setOpen2] = React.useState(false);
     const handleClickOpen = (row,setOpenx) => {
-        setSelected(row);
+        console.log(row);
+        if (row !== -1) setSelected(row);
+        else 
+        if (userSelected._id === undefined||userSelected._id ===""){
+            setSelected({
+                _id: "", 
+                Title: "",
+                Author: "", 
+                Description: "", 
+                Image: "", 
+                Audio: [], 
+                Company:"", 
+                PDF:"", 
+                PublishingCompany:"",
+                Star:0 , Type:"",
+            })
+        }
         setOpenx(true);
     };
-
     const handleClose = (setOpenx) => {
         setOpenx(false);
     };
@@ -53,8 +68,31 @@ function Book() {
        <div className={classes.container} >
             <Box style={{marginBottom: 20}}>
                 <Typography variant="h5" style={{color: 'red', margin: 10}}>All Books Data</Typography>
-                <Button variant="contained">Add new book</Button>    
+                <Button variant="contained" onClick={()=> handleClickOpen(-1,setOpen)}>Add new book</Button>    
             </Box>
+            {/* form add book */}
+            <Dialog open={open} onClose={()=>handleClose(setOpen)} fullScreen>
+                <DialogTitle>{userSelected._id===""? "Add new book": "Book Data"}</DialogTitle>
+                <DialogContent>
+                <DialogContentText>
+                        {userSelected._id===""? "Add new book ": "View and Edit Book:" + userSelected.Title}
+                </DialogContentText>
+                <TextField
+                    autoFocus
+                    margin="dense"
+                    id="password"
+                    label="Confirm password"
+                    type="password"
+                    fullWidth
+                    variant="standard"
+                />
+                </DialogContent>
+                <DialogActions>
+                <Button onClick={()=>handleClose(setOpen)}>Cancel</Button>
+                <Button onClick={()=>handleClose(setOpen)} color="error">Delete</Button>
+                </DialogActions>
+            </Dialog>
+            {/* Delete dig */}
             <Dialog open={open2} onClose={()=>handleClose(setOpen2)}>
                 <DialogTitle>Delete {userSelected.Title}</DialogTitle>
                 <DialogContent>
@@ -104,7 +142,7 @@ function Book() {
                         <TableCell align="left">{row.Author}</TableCell>
                         <TableCell align="left">{row.Type}</TableCell>
                         <TableCell align="left">{row.Image}</TableCell>
-                        <TableCell align="center"><Button variant="contained">View</Button></TableCell>
+                        <TableCell align="center"><Button variant="contained" onClick={()=> handleClickOpen(row,setOpen)}>View</Button></TableCell>
                         <TableCell align="center"><Button variant="contained" color="error" onClick={()=> handleClickOpen(row,setOpen2)}>Delete</Button></TableCell>
                         </TableRow>
                     ))}
