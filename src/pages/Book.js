@@ -23,6 +23,7 @@ import CircularProgress from "react-cssfx-loading/lib/CircularProgress";
 import {AiOutlineClose} from 'react-icons/ai'
 import IconButton from '@mui/material/IconButton';
 import MenuItem from '@mui/material/MenuItem';
+import LoadingButton from '@mui/lab/LoadingButton';
 
 const useStyles = makeStyles({
     container:{
@@ -33,6 +34,7 @@ const useStyles = makeStyles({
 function Book() {
     const books = useSelector(AllBooks);
     const [rows, setRows] = useState([]);
+    const [loading,setloading] = useState(false);
     const dispatch = useDispatch();
     const classes = useStyles();
     const defaultBook = {
@@ -48,6 +50,7 @@ function Book() {
         Star:0 , 
         Type:"",
     }
+    const types =["NOVEL","SELF HELP","CHILDREN'S BOOK", "WORK STYLE","SCIENCE","OTHERS"]
     useEffect(()=>{
         setRows(books);
     },[books])
@@ -65,10 +68,6 @@ function Book() {
     const handleClickOpen = (row,setOpenx) => {
         console.log(row);
         if (row !== -1) setSelected(row);
-        else 
-        if (userSelected._id === undefined||userSelected._id ===""){
-            setSelected(defaultBook);
-        }
         setOpenx(true);
     };
     const handleClose = (setOpenx) => {
@@ -97,20 +96,118 @@ function Book() {
                 <DialogContent>
                 <DialogContentText>
                     
-                         View and Edit Book: {userSelected.Title}
+                         View and edit: {userSelected.Title}
                 </DialogContentText>
+                <Typography variant="h6" style={{marginTop: 15}}>Title:</Typography>
+                <TextField
+                    margin="dense"
+                    id="title"
+                    label="Title of book"
+                    type="text"
+                    value={userSelected.Title}
+                    onChange={(event) => setSelected({...userSelected,Title: event.target.value})}
+                    fullWidth
+                />
+                <Typography variant="h6" style={{marginTop: 15}}>Author:</Typography>
+                <TextField
+                    margin="dense"
+                    id="author"
+                    label="Author name"
+                    value={userSelected.Author}
+                    onChange={(event) => setSelected({...userSelected,Author: event.target.value})}
+                    type="text"
+                    fullWidth
+                />
+                <Typography variant="h6" style={{marginTop: 15}}>Type:</Typography>
+                <TextField
+                    margin="dense"
+                    id="type"
+                    label="Type"
+                    select
+                    value={userSelected.Type}
+                    onChange={(event) => setSelected({...userSelected,Type: event.target.value})}
+                    
+                    style={{width: 200}}
+                >
+                    { types.map(i=>
+                        <MenuItem key={i} value={i}>{i}</MenuItem>
+                    )
+                    }
+                </TextField>
+                <Typography variant="h6" style={{marginTop: 15}}>Description:</Typography>
+                <TextField
+                    margin="dense"
+                    id="description"
+                    label="Description"
+                    value={userSelected.Description}
+                    onChange={(event) => setSelected({...userSelected,Description: event.target.value})}
+                    type="text"
+                    fullWidth
+                    multiline
+                />
+                <Typography variant="h6" style={{marginTop: 15}}>Company:</Typography>
+                <TextField
+                    margin="dense"
+                    id="company"
+                    label="Company "
+                    type="text"
+                    value={userSelected.Company}
+                    onChange={(event) => setSelected({...userSelected,Company: event.target.value})}
+                    fullWidth
+                />
+                <Typography variant="h6" style={{marginTop: 15}}>PublishingCompany:</Typography>
+                <TextField
+                    margin="dense"
+                    id="publicer"
+                    label="Publishing Company "
+                    value={userSelected.PublishingCompany}
+                    onChange={(event) => setSelected({...userSelected,PublishingCompany: event.target.value})}
+                    type="text"
+                    fullWidth
+                />
+                <Typography variant="h6" style={{marginTop: 15}}>Stars:</Typography>
+                <TextField
+                    margin="dense"
+                    id="stars"
+                    label="Stars"
+                    value={userSelected.Star}
+                    type="number"
+                    error={userSelected.Star<0||userSelected.Star>5}
+                    onChange={(event) => setSelected({...userSelected,Star: event.target.value})}
+                    style={{width: 200}}
+                >
+                </TextField>
+                <Typography variant="h6" style={{marginTop: 15}}>Image:</Typography>
+                <TextField
+                    margin="dense"
+                    id="image"
+                    label="Image link"
+                    value={userSelected.Image}
+                    onChange={(event) => setSelected({...userSelected,Image: event.target.value})}
+                    type="text"
+                    fullWidth
+                />
+               {/* <Typography variant="h6" style={{marginTop: 15}}>Audio List:</Typography>
+               <Typography variant="subtitle1">a audio/line</Typography>
+                <TextField
+                    margin="dense"
+                    id="audio"
+                    label="Audio List"
+                    type="week"
+                    fullWidth
+                    multiline
+                />
                 <TextField
                     margin="dense"
                     id="password"
-                    label="Confirm password"
+                    label="Confirm admin password to add new book"
                     type="password"
-                    fullWidth
-                    variant="standard"
-                />
+                    fullWidth  
+                /> */}
                 </DialogContent>
-                <DialogActions>
-                <Button onClick={()=>handleClose(setOpen)}>Cancel</Button>
-                <Button onClick={()=>handleClose(setOpen)} color="error">Delete</Button>
+                <DialogActions style={{marginBottom:20}}>
+                <Button onClick={()=>handleClose(setOpen)} >Cancel</Button>
+                <Button onClick={()=>handleClose(setOpen)} variant="contained">Update Book</Button>
                 </DialogActions>
             </Dialog>
             {/* Form add new book */}
@@ -134,6 +231,8 @@ function Book() {
                     id="title"
                     label="Title of book"
                     type="text"
+                    value={bookNew.Title}
+                    onChange={(event) => setBookNew({...bookNew,Title: event.target.value})}
                     fullWidth
                 />
                 <Typography variant="h6" style={{marginTop: 15}}>Author:</Typography>
@@ -141,6 +240,8 @@ function Book() {
                     margin="dense"
                     id="author"
                     label="Author name"
+                    value={bookNew.Author}
+                    onChange={(event) => setBookNew({...bookNew,Author: event.target.value})}
                     type="text"
                     fullWidth
                 />
@@ -150,9 +251,12 @@ function Book() {
                     id="type"
                     label="Type"
                     select
+                    value={bookNew.Type}
+                    onChange={(event) => setBookNew({...bookNew,Type: event.target.value})}
+                    
                     style={{width: 200}}
                 >
-                    { [...Array(5).keys()].map(i=>
+                    { types.map(i=>
                         <MenuItem key={i} value={i}>{i}</MenuItem>
                     )
                     }
@@ -162,6 +266,8 @@ function Book() {
                     margin="dense"
                     id="description"
                     label="Description"
+                    value={bookNew.Description}
+                    onChange={(event) => setBookNew({...bookNew,Description: event.target.value})}
                     type="text"
                     fullWidth
                     multiline
@@ -172,6 +278,8 @@ function Book() {
                     id="company"
                     label="Company "
                     type="text"
+                    value={bookNew.Company}
+                    onChange={(event) => setBookNew({...bookNew,Company: event.target.value})}
                     fullWidth
                 />
                 <Typography variant="h6" style={{marginTop: 15}}>PublishingCompany:</Typography>
@@ -179,6 +287,8 @@ function Book() {
                     margin="dense"
                     id="publicer"
                     label="Publishing Company "
+                    value={bookNew.PublishingCompany}
+                    onChange={(event) => setBookNew({...bookNew,PublishingCompany: event.target.value})}
                     type="text"
                     fullWidth
                 />
@@ -187,35 +297,27 @@ function Book() {
                     margin="dense"
                     id="stars"
                     label="Stars"
-                    select
+                    value={bookNew.Star}
+                    type="number"
+                    error={bookNew.Star<0||bookNew.Star>5}
+                    onChange={(event) => setBookNew({...bookNew,Star: event.target.value})}
                     style={{width: 200}}
                 >
-                    { [...Array(5).keys()].map(i=>
-                        <MenuItem key={i} value={i}>{i+1}</MenuItem>
-                    )
-                    }
                 </TextField>
                 <Typography variant="h6" style={{marginTop: 15}}>Image:</Typography>
                 <TextField
                     margin="dense"
                     id="image"
                     label="Image link"
+                    value={bookNew.Image}
+                    onChange={(event) => setBookNew({...bookNew,Image: event.target.value})}
                     type="text"
                     fullWidth
                 />
-               
-                <TextField
-                    margin="dense"
-                    id="password"
-                    label="Confirm admin password to add new book"
-                    type="password"
-                    fullWidth  
-                    variant="standard" 
-                />
                 </DialogContent>
-                <DialogActions>
-                <Button onClick={()=>handleClose(setOpen3)}>Cancel</Button>
-                <Button onClick={()=>handleClose(setOpen3)}>Add Book</Button>
+                <DialogActions style={{marginBottom:20}}>
+                <Button onClick={()=> setBookNew(defaultBook)} color="error">Clear Data</Button>
+                <Button onClick={()=>handleClose(setOpen3)} variant="contained">Add Book</Button>
                 </DialogActions>
             </Dialog>
             {/* Delete dig */}

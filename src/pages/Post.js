@@ -19,6 +19,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
 import CircularProgress from "react-cssfx-loading/lib/CircularProgress";
+import LoadingButton from '@mui/lab/LoadingButton';
 const useStyles = makeStyles({
     container:{
         marginTop: 100,
@@ -29,6 +30,7 @@ const useStyles = makeStyles({
 function Book() {
     const posts = useSelector(AllPosts);
     const [rows, setRows] = useState([]);
+    const [loading,setloading] = useState(false);
     const dispatch = useDispatch();
     const classes = useStyles();
     useEffect(()=>{
@@ -50,18 +52,21 @@ function Book() {
     };
     const [password,setPassword] = useState('');
     const handleAccept = async (event) => {
-        console.log("halu")
+        setloading(true);
         event.preventDefault();
         const data = {id: userSelected._id, password: password}; 
-        handleClose(setOpen2)
         setPassword('');
+        
         const result = await dispatch(acceptPost(data));
+        handleClose(setOpen2)
+        setloading(false);
         if (result.status){
             alert(result.data.message);
         } else {
             alert("something went wrong");
         }
 
+        setloading(false);
         
     }
     return (
@@ -88,7 +93,7 @@ function Book() {
                 </DialogContent>
                 <DialogActions>
                 <Button onClick={()=>handleClose(setOpen2)}>Cancel</Button>
-                <Button onClick={(event)=>handleAccept(event)}>OK</Button>
+                <LoadingButton onClick={(event)=>handleAccept(event)} loading={loading}>OK</LoadingButton>
                 </DialogActions>
             </Dialog>
             {/* ---------------------table data */}
