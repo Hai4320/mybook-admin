@@ -24,6 +24,7 @@ import {AiOutlineClose} from 'react-icons/ai'
 import IconButton from '@mui/material/IconButton';
 import MenuItem from '@mui/material/MenuItem';
 import LoadingButton from '@mui/lab/LoadingButton';
+import {addBook, updateBook, deleteBook} from '../redux/actions/bookAction'
 
 const useStyles = makeStyles({
     container:{
@@ -46,6 +47,7 @@ function Book() {
         Audio: [], 
         Company:"", 
         PDF:"", 
+        Status:"",
         PublishingCompany:"",
         Star:0 , 
         Type:"",
@@ -61,12 +63,55 @@ function Book() {
     const [bookNew, setBookNew] = useState(defaultBook);
     //open edit
     const [open, setOpen] = React.useState(false);
+    const handleUpdateBook = async()=>{
+        setloading(true);
+        const data = {...userSelected};
+        const result = await dispatch(updateBook(data));
+        setloading(false);
+        if (result.status){
+            alert(result.data.message);
+        } else {
+            alert("something went wrong");
+        }
+
+        setloading(false);
+        
+    }
     //open delete
     const [open2, setOpen2] = React.useState(false);
+    const [password,setPassword] = useState('');
+    const handleDelete = async (event) => {
+        event.preventDefault();
+        const data = {id: userSelected._id, password: password}; 
+        handleClose(setOpen2)
+        setPassword('');
+        const result = await dispatch(deleteBook(data));
+        if (result.status){
+            alert(result.data.message);
+        } else {
+            alert("something went wrong");
+        }
+
+        
+    }
     //open add
     const [open3, setOpen3] = React.useState(false);
+    const handleAddBook = async()=>{
+        setloading(true);
+        const data = {...bookNew};
+        const result = await dispatch(addBook(data));
+        setloading(false);
+        if (result.status){
+            alert(result.data.message);
+        } else {
+            alert("something went wrong");
+        }
+
+        setloading(false);
+        
+    }
+    //open and close
     const handleClickOpen = (row,setOpenx) => {
-        console.log(row);
         if (row !== -1) setSelected(row);
         setOpenx(true);
     };
@@ -187,6 +232,26 @@ function Book() {
                     type="text"
                     fullWidth
                 />
+                <Typography variant="h6" style={{marginTop: 15}}>PDF:</Typography>
+                <TextField
+                    margin="dense"
+                    id="pdf"
+                    label="PDF link"
+                    value={userSelected.PDF}
+                    onChange={(event) => setSelected({...userSelected,PDF: event.target.value})}
+                    type="text"
+                    fullWidth
+                />
+                <Typography variant="h6" style={{marginTop: 15}}>Status:</Typography>
+                <TextField
+                    margin="dense"
+                    id="st"
+                    label="Status"
+                    value={userSelected.Status}
+                    onChange={(event) => setSelected({...userSelected,Status: event.target.value})}
+                    type="text"
+                    fullWidth
+                />
                {/* <Typography variant="h6" style={{marginTop: 15}}>Audio List:</Typography>
                <Typography variant="subtitle1">a audio/line</Typography>
                 <TextField
@@ -207,7 +272,7 @@ function Book() {
                 </DialogContent>
                 <DialogActions style={{marginBottom:20}}>
                 <Button onClick={()=>handleClose(setOpen)} >Cancel</Button>
-                <Button onClick={()=>handleClose(setOpen)} variant="contained">Update Book</Button>
+                <LoadingButton onClick={()=>handleUpdateBook()} variant="contained" loading={loading}>Update Book</LoadingButton>
                 </DialogActions>
             </Dialog>
             {/* Form add new book */}
@@ -314,13 +379,33 @@ function Book() {
                     type="text"
                     fullWidth
                 />
+                <Typography variant="h6" style={{marginTop: 15}}>PDF:</Typography>
+                <TextField
+                    margin="dense"
+                    id="pdf"
+                    label="PDF link"
+                    value={bookNew.PDF}
+                    onChange={(event) => setBookNew({...bookNew,PDF: event.target.value})}
+                    type="text"
+                    fullWidth
+                />
+                <Typography variant="h6" style={{marginTop: 15}}>Status:</Typography>
+                <TextField
+                    margin="dense"
+                    id="st"
+                    label="Status"
+                    value={bookNew.Status}
+                    onChange={(event) => setBookNew({...bookNew,Status: event.target.value})}
+                    type="text"
+                    fullWidth
+                />
                 </DialogContent>
                 <DialogActions style={{marginBottom:20}}>
                 <Button onClick={()=> setBookNew(defaultBook)} color="error">Clear Data</Button>
-                <Button onClick={()=>handleClose(setOpen3)} variant="contained">Add Book</Button>
+                <LoadingButton onClick={()=>handleAddBook()} variant="contained" loading={loading}>Add Book</LoadingButton>
                 </DialogActions>
             </Dialog>
-            {/* Delete dig */}
+            {/* Delete Book */}
             <Dialog open={open2} onClose={()=>handleClose(setOpen2)}>
                 <DialogTitle>Delete {userSelected.Title}</DialogTitle>
                 <DialogContent>
@@ -333,12 +418,14 @@ function Book() {
                     label="Confirm password"
                     type="password"
                     fullWidth
+                    value={password}
+                    onChange={(event)=> setPassword(event.target.value)}
                     variant="standard"
                 />
                 </DialogContent>
                 <DialogActions>
                 <Button onClick={()=>handleClose(setOpen2)}>Cancel</Button>
-                <Button onClick={()=>handleClose(setOpen2)} color="error">Delete</Button>
+                <Button onClick={(event)=>handleDelete(event)} color="error">Delete</Button>
                 </DialogActions>
             </Dialog>
             {/* -------------------------data--------------- */}

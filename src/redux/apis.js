@@ -7,7 +7,9 @@ export const deleteUser_URL = API + "/users/delete"
 
 // BOOK
 export const getBooks_URL= API + "/books"
-
+export const deleteBook_URL = API + "/books/delete"
+export const addBook_URL = API + "/books/add"
+export const updateBook_URL = API + "/books/update"
 
 //POST
 export const getPosts_URL= API + "/posts/adminget"
