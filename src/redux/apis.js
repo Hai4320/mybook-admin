@@ -4,6 +4,7 @@ export const API = "https://mybooksv.herokuapp.com";
 export const login_URL= API + "/users/loginadmin"
 export const getUsers_URL= API + "/users/alluser"
 export const deleteUser_URL = API + "/users/delete"
+export const sendMessage_URL = API + "/users/sendmessage"
 
 // BOOK
 export const getBooks_URL= API + "/books"

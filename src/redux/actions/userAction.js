@@ -1,5 +1,5 @@
 import {LOGIN, GET_USERS} from "../types"
-import { login_URL, getUsers_URL, deleteUser_URL} from "../apis"
+import { login_URL, getUsers_URL, deleteUser_URL, sendMessage_URL} from "../apis"
 
 export const LoginAdmin = (data) => async dispatch =>{
     try {
@@ -73,6 +73,29 @@ export const deleteUser = (data) => async dispatch=>{
                 payload: datax.users
             })
         }
+        return {status: result.status, data: datax}
+    } catch (error) {
+        console.log(error);
+        return {};
+    }
+}
+export const sendMessage = (data) => async dispatch=>{
+    try {
+        const user = JSON.parse(localStorage.getItem('userData'));
+        console.log(user);
+        const result = await fetch(sendMessage_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                userADMIN: user.id,
+                userID: data.id,
+                password: data.password,
+                message: data.message
+            })
+        });
+        const datax = await result.json()
         return {status: result.status, data: datax}
     } catch (error) {
         console.log(error);

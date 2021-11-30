@@ -9,7 +9,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import {useSelector, useDispatch} from 'react-redux';
-import {getAllUser, deleteUser} from '../redux/actions/userAction'
+import {getAllUser, deleteUser, sendMessage} from '../redux/actions/userAction'
 import {AllUsers} from '../redux/selectors'
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -53,12 +53,30 @@ function User() {
     };
     //delete User Selected
     const [password,setPassword] = useState('');
+    const [password2,setPassword2] = useState('');
+    const [message,setMessage] = useState("")
     const handleDelete = async (event) => {
         event.preventDefault();
         const data = {id: userSelected._id, password: password}; 
         handleClose(setOpen2)
         setPassword('');
         const result = await dispatch(deleteUser(data));
+        if (result.status){
+            alert(result.data.message);
+        } else {
+            alert("something went wrong");
+        }
+
+        
+    }
+    const handleSendMessage = async (event) => {
+        event.preventDefault();
+        const data = {id: userSelected._id, password: password2, message: message}; 
+        handleClose(setOpen)
+        setPassword2('');
+        setMessage("");
+        
+        const result = await dispatch(sendMessage(data));
         if (result.status){
             alert(result.data.message);
         } else {
@@ -83,14 +101,25 @@ function User() {
                     margin="dense"
                     id="massage"
                     label="Message"
+                    value={message}
+                    onChange={(event)=> setMessage(event.target.value)}
                     type="text"
                     fullWidth
-                    variant="standard"
+                />
+                <TextField
+                    autoFocus
+                    margin="dense"
+                    id="password"
+                    value={password2}
+                    onChange={(event)=> setPassword2(event.target.value)}
+                    label="Password confirm"
+                    type="password"
+                    fullWidth
                 />
                 </DialogContent>
                 <DialogActions>
                 <Button onClick={()=>handleClose(setOpen)}>Cancel</Button>
-                <Button onClick={()=>handleClose(setOpen)}>Send</Button>
+                <Button onClick={(event)=>handleSendMessage(event)} variant="contained">Send</Button>
                 </DialogActions>
             </Dialog>
             {/* ----------------------------Delete User */}
